@@ -19,6 +19,14 @@ def main(file, output):
     line = re.sub(r'([^\sa-z]|_)+', '', line)
     words.extend(line.split(' '))
   answers.close()
+  singular_rules = [lambda w: w[-3:] == 'ies' and w[:-3] + 'y',
+                    lambda w: w[-4:] == 'ives' and w[:-4] + 'ife',
+                    lambda w: w[-3:] == 'ves' and w[:-3] + 'f',
+                    lambda w: w[-2:] == 'es' and w[:-2],
+                    lambda w: w[-1:] == 's' and w[:-1],
+                    lambda w: w,
+                    ]
+  words = [[f(word) for f in singular_rules if f(word) is not False][0] for word in words]
   frequency = Counter(words)
   for word in negative:
     del frequency[word]
